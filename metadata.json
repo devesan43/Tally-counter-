@@ -1,0 +1,6 @@
+{
+  "name": "Count Tracker",
+  "description": "Daily and cumulative count tracking across multiple customizable names with history and progress analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
