@@ -20,16 +20,31 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew || true
+        run: |
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+          fi
 
       - name: Build with Gradle
-        run: ./gradlew assembleDebug --stacktrace
+        run: |
+          if [ -f "./gradlew" ]; then
+            ./gradlew assembleDebug --stacktrace
+          else
+            gradle assembleDebug --stacktrace
+          fi
 
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest --continue || true
+        run: |
+          if [ -f "./gradlew" ]; then
+            ./gradlew testDebugUnitTest --continue || true
+          else
+            gradle testDebugUnitTest --continue || true
+          fi
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
