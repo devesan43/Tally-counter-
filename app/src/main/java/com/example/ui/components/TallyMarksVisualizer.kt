@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.min
@@ -37,7 +38,7 @@ fun TallyMarksVisualizer(
 
     Row(
         modifier = modifier.horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Render 5-tally bundles
@@ -53,10 +54,11 @@ fun TallyMarksVisualizer(
         if (fullGroups > maxClustersToShow) {
             Text(
                 text = "+${(count - (maxClustersToShow * 5))} more",
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 10.sp,
-                modifier = Modifier.padding(start = 4.dp)
+                fontSize = 13.sp,
+                modifier = Modifier.padding(start = 6.dp)
             )
         }
     }
@@ -67,8 +69,8 @@ fun TallyBundleFive(
     color: Color,
     modifier: Modifier = Modifier
 ) {
-    Canvas(modifier = modifier.size(width = 30.dp, height = 24.dp)) {
-        val strokeWidth = 2.5.dp.toPx()
+    Canvas(modifier = modifier.size(width = 36.dp, height = 30.dp)) {
+        val strokeWidth = 3.5.dp.toPx()
         val spacing = size.width / 5
 
         // 4 vertical lines
@@ -100,8 +102,8 @@ fun TallyBundlePartial(
     color: Color,
     modifier: Modifier = Modifier
 ) {
-    Canvas(modifier = modifier.size(width = (count * 7 + 4).dp, height = 24.dp)) {
-        val strokeWidth = 2.5.dp.toPx()
+    Canvas(modifier = modifier.size(width = (count * 9 + 6).dp, height = 30.dp)) {
+        val strokeWidth = 3.5.dp.toPx()
         val spacing = size.width / (count + 1)
 
         for (i in 1..count) {

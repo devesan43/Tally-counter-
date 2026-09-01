@@ -145,29 +145,29 @@ fun MainScreen(viewModel: CountTrackerViewModel) {
                 NavigationBarItem(
                     selected = currentTab == 0,
                     onClick = { currentTab = 0 },
-                    icon = { Icon(Icons.Default.TouchApp, contentDescription = null) },
-                    label = { Text("Tally") },
+                    icon = { Icon(Icons.Default.TouchApp, contentDescription = null, modifier = Modifier.size(28.dp)) },
+                    label = { Text("Tally", fontSize = 14.sp, fontWeight = if (currentTab == 0) FontWeight.Black else FontWeight.Bold) },
                     modifier = Modifier.testTag("nav_tab_tally")
                 )
                 NavigationBarItem(
                     selected = currentTab == 1,
                     onClick = { currentTab = 1 },
-                    icon = { Icon(Icons.Default.ViewAgenda, contentDescription = null) },
-                    label = { Text("Trackers") },
+                    icon = { Icon(Icons.Default.ViewAgenda, contentDescription = null, modifier = Modifier.size(28.dp)) },
+                    label = { Text("Trackers", fontSize = 14.sp, fontWeight = if (currentTab == 1) FontWeight.Black else FontWeight.Bold) },
                     modifier = Modifier.testTag("nav_tab_trackers")
                 )
                 NavigationBarItem(
                     selected = currentTab == 2,
                     onClick = { currentTab = 2 },
-                    icon = { Icon(Icons.Default.Assessment, contentDescription = null) },
-                    label = { Text("Logs & Totals") },
+                    icon = { Icon(Icons.Default.Assessment, contentDescription = null, modifier = Modifier.size(28.dp)) },
+                    label = { Text("Logs", fontSize = 14.sp, fontWeight = if (currentTab == 2) FontWeight.Black else FontWeight.Bold) },
                     modifier = Modifier.testTag("nav_tab_matrix")
                 )
                 NavigationBarItem(
                     selected = currentTab == 3,
                     onClick = { currentTab = 3 },
-                    icon = { Icon(Icons.Default.History, contentDescription = null) },
-                    label = { Text("Timeline") },
+                    icon = { Icon(Icons.Default.History, contentDescription = null, modifier = Modifier.size(28.dp)) },
+                    label = { Text("Timeline", fontSize = 14.sp, fontWeight = if (currentTab == 3) FontWeight.Black else FontWeight.Bold) },
                     modifier = Modifier.testTag("nav_tab_timeline")
                 )
             }
@@ -180,8 +180,8 @@ fun MainScreen(viewModel: CountTrackerViewModel) {
                         showAddCountDialog = true
                     },
                     modifier = Modifier.testTag("fab_add_count"),
-                    icon = { Icon(Icons.Default.Add, contentDescription = "Add Count") },
-                    text = { Text("Log Count", fontWeight = FontWeight.Bold) }
+                    icon = { Icon(Icons.Default.Add, contentDescription = "Add Count", modifier = Modifier.size(24.dp)) },
+                    text = { Text("Log Count", fontWeight = FontWeight.Black, fontSize = 16.sp) }
                 )
             }
         }
@@ -195,48 +195,58 @@ fun MainScreen(viewModel: CountTrackerViewModel) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
                     Text(
                         text = "Count Tracker",
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Black,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
                         text = DateUtils.formatToPrettyDisplay(DateUtils.todayIso()),
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
                     )
                 }
 
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     FilledTonalButton(
                         onClick = { showAddTrackerDialog = true },
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.testTag("header_add_tracker_btn")
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier
+                            .height(46.dp)
+                            .testTag("header_add_tracker_btn"),
+                        contentPadding = PaddingValues(horizontal = 14.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.PersonAdd,
                             contentDescription = "New Name",
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(20.dp)
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("New Name", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("New Name", fontSize = 14.sp, fontWeight = FontWeight.Black)
                     }
 
                     IconButton(
                         onClick = { showExportDialog = true },
-                        modifier = Modifier.testTag("header_share_btn")
+                        modifier = Modifier
+                            .size(46.dp)
+                            .testTag("header_share_btn")
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = "Export Data",
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(26.dp)
                         )
                     }
                 }

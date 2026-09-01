@@ -248,7 +248,7 @@ fun TallyClickerScreen(
 
                 // Horizontal scroll list of all tracker names (Name-1, Name-2, etc.)
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     // First Name shortcut button
@@ -259,17 +259,25 @@ fun TallyClickerScreen(
                             FilterChip(
                                 selected = isFirstSelected,
                                 onClick = { selectedTrackerId = firstTracker.id },
-                                label = { Text("★ First Name (${firstTracker.name})", fontWeight = FontWeight.Black) },
+                                label = {
+                                    Text(
+                                        "★ First Name (${firstTracker.name})",
+                                        fontWeight = FontWeight.Black,
+                                        fontSize = 17.sp
+                                    )
+                                },
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Default.Star,
                                         contentDescription = null,
-                                        modifier = Modifier.size(14.dp),
+                                        modifier = Modifier.size(22.dp),
                                         tint = MaterialTheme.colorScheme.primary
                                     )
                                 },
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier.testTag("tally_first_name_btn")
+                                shape = RoundedCornerShape(16.dp),
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .testTag("tally_first_name_btn")
                             )
                         }
                     }
@@ -283,42 +291,45 @@ fun TallyClickerScreen(
                             label = {
                                 Text(
                                     text = item.tracker.name,
-                                    fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium
+                                    fontSize = 17.sp,
+                                    fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold
                                 )
                             },
                             leadingIcon = {
                                 Box(
                                     modifier = Modifier
-                                        .size(10.dp)
+                                        .size(14.dp)
                                         .background(itemColor, CircleShape)
                                 )
                             },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = itemColor.copy(alpha = 0.18f),
+                                selectedContainerColor = itemColor.copy(alpha = 0.25f),
                                 selectedLabelColor = MaterialTheme.colorScheme.onSurface
                             ),
-                            border = if (isSelected) BorderStroke(1.8.dp, itemColor) else null,
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.testTag("tally_chip_${item.tracker.name}")
+                            border = if (isSelected) BorderStroke(2.5.dp, itemColor) else null,
+                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .testTag("tally_chip_${item.tracker.name}")
                         )
                     }
 
                     item {
                         FilledTonalButton(
                             onClick = onAddNewTracker,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(16.dp),
                             modifier = Modifier
-                                .height(32.dp)
+                                .height(50.dp)
                                 .testTag("tally_add_name_chip"),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
                                 contentDescription = null,
-                                modifier = Modifier.size(14.dp)
+                                modifier = Modifier.size(22.dp)
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("New Name", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("New Name", fontSize = 16.sp, fontWeight = FontWeight.Black)
                         }
                     }
                 }
@@ -334,25 +345,37 @@ fun TallyClickerScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Today chip
                 FilterChip(
                     selected = selectedDate == today,
                     onClick = { selectedDate = today },
-                    label = { Text("Today (${DateUtils.formatToShortDisplay(today)})") },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.testTag("date_chip_today")
+                    label = {
+                        Text(
+                            "Today (${DateUtils.formatToShortDisplay(today)})",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Black
+                        )
+                    },
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .height(48.dp)
+                        .testTag("date_chip_today")
                 )
 
                 // Yesterday chip
                 FilterChip(
                     selected = selectedDate == yesterday,
                     onClick = { selectedDate = yesterday },
-                    label = { Text("Yesterday") },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.testTag("date_chip_yesterday")
+                    label = {
+                        Text("Yesterday", fontSize = 16.sp, fontWeight = FontWeight.Black)
+                    },
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .height(48.dp)
+                        .testTag("date_chip_yesterday")
                 )
 
                 // Custom date picker chip
@@ -378,18 +401,22 @@ fun TallyClickerScreen(
                     },
                     label = {
                         Text(
-                            text = if (isCustomDate) DateUtils.formatToShortDisplay(selectedDate) else "Pick Date..."
+                            text = if (isCustomDate) DateUtils.formatToShortDisplay(selectedDate) else "Pick Date...",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Black
                         )
                     },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.CalendarMonth,
                             contentDescription = null,
-                            modifier = Modifier.size(14.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.testTag("date_chip_custom")
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .height(48.dp)
+                        .testTag("date_chip_custom")
                 )
             }
         }
@@ -422,27 +449,28 @@ fun TallyClickerScreen(
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .size(14.dp)
+                                        .size(20.dp)
                                         .background(trackerColor, CircleShape)
                                 )
                                 Text(
                                     text = activeSummary.tracker.name,
-                                    style = MaterialTheme.typography.titleLarge,
+                                    style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Black
                                 )
                                 Surface(
-                                    color = trackerColor.copy(alpha = 0.12f),
-                                    shape = RoundedCornerShape(8.dp)
+                                    color = trackerColor.copy(alpha = 0.15f),
+                                    shape = RoundedCornerShape(10.dp)
                                 ) {
                                     Text(
                                         text = activeSummary.tracker.unit.uppercase(),
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.Black,
+                                        fontSize = 15.sp,
                                         color = trackerColor
                                     )
                                 }
@@ -450,29 +478,33 @@ fun TallyClickerScreen(
 
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 IconButton(
                                     onClick = { onEditTracker(activeSummary.tracker) },
-                                    modifier = Modifier.size(32.dp).testTag("tally_edit_tracker_btn")
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .testTag("tally_edit_tracker_btn")
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Edit,
                                         contentDescription = "Edit Name & Unit",
                                         tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(18.dp)
+                                        modifier = Modifier.size(26.dp)
                                     )
                                 }
 
                                 IconButton(
                                     onClick = { showDeleteConfirmDialog = true },
-                                    modifier = Modifier.size(32.dp).testTag("tally_delete_tracker_btn")
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .testTag("tally_delete_tracker_btn")
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Delete Name & Unit",
                                         tint = MaterialTheme.colorScheme.error,
-                                        modifier = Modifier.size(18.dp)
+                                        modifier = Modifier.size(26.dp)
                                     )
                                 }
                             }
@@ -482,7 +514,7 @@ fun TallyClickerScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(18.dp))
+                                .clip(RoundedCornerShape(22.dp))
                                 .background(
                                     Brush.verticalGradient(
                                         listOf(
@@ -491,11 +523,11 @@ fun TallyClickerScreen(
                                         )
                                     )
                                 )
-                                .padding(horizontal = 18.dp, vertical = 14.dp)
+                                .padding(horizontal = 22.dp, vertical = 18.dp)
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -505,18 +537,18 @@ fun TallyClickerScreen(
                                     Text(
                                         text = "${DateUtils.formatToPrettyDisplay(selectedDate).uppercase()} COUNT",
                                         fontFamily = FontFamily.Monospace,
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF94A3B8),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Color(0xFFE2E8F0),
                                         letterSpacing = 1.sp
                                     )
 
                                     Text(
-                                        text = "CUMULATIVE",
+                                        text = "CUMULATIVE TOTAL",
                                         fontFamily = FontFamily.Monospace,
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF94A3B8),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Color(0xFFE2E8F0),
                                         letterSpacing = 1.sp
                                     )
                                 }
@@ -543,7 +575,7 @@ fun TallyClickerScreen(
                                         Text(
                                             text = "$targetCount",
                                             fontFamily = FontFamily.Monospace,
-                                            fontSize = 44.sp,
+                                            fontSize = 66.sp,
                                             fontWeight = FontWeight.Black,
                                             color = Color(0xFF38BDF8) // Bright Cyan LED
                                         )
@@ -554,14 +586,15 @@ fun TallyClickerScreen(
                                         Text(
                                             text = "$cumulativeCount",
                                             fontFamily = FontFamily.Monospace,
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 32.sp,
+                                            fontWeight = FontWeight.Black,
                                             color = Color(0xFF4ADE80) // Emerald Green LED
                                         )
                                         Text(
                                             text = "All-time total",
-                                            fontSize = 10.sp,
-                                            color = Color(0xFF64748B)
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFF94A3B8)
                                         )
                                     }
                                 }
@@ -573,35 +606,37 @@ fun TallyClickerScreen(
                             Surface(
                                 modifier = Modifier.fillMaxWidth(),
                                 color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(12.dp)
+                                shape = RoundedCornerShape(14.dp)
                             ) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(8.dp),
+                                        .padding(12.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     TallyMarksVisualizer(
                                         count = dateCount,
                                         color = trackerColor
                                     )
+                                    Spacer(modifier = Modifier.height(6.dp))
                                     Text(
                                         text = "$dateCount tally mark${if (dateCount == 1L) "" else "s"}",
-                                        style = MaterialTheme.typography.labelSmall,
+                                        style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontSize = 10.sp
+                                        fontWeight = FontWeight.Black,
+                                        fontSize = 14.sp
                                     )
                                 }
                             }
                         }
 
-                        // GIANT TACTILE CLICKER PAD
+                        // GIANT TACTILE CLICKER PAD (Ultra-large for elderly/easy tapping)
                         Box(
                             modifier = Modifier
-                                .size(175.dp)
+                                .size(230.dp)
                                 .scale(scaleAnim.value)
                                 .shadow(
-                                    elevation = 10.dp,
+                                    elevation = 14.dp,
                                     shape = CircleShape,
                                     ambientColor = trackerColor,
                                     spotColor = trackerColor
@@ -629,41 +664,43 @@ fun TallyClickerScreen(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "Count +$stepSize",
                                     tint = Color.White,
-                                    modifier = Modifier.size(36.dp)
+                                    modifier = Modifier.size(50.dp)
                                 )
                                 Text(
                                     text = "+$stepSize",
-                                    fontSize = 28.sp,
+                                    fontSize = 46.sp,
                                     fontWeight = FontWeight.Black,
                                     color = Color.White
                                 )
                                 Text(
                                     text = "TAP TO COUNT",
-                                    fontSize = 9.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White.copy(alpha = 0.8f),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White.copy(alpha = 0.95f),
                                     letterSpacing = 1.sp
                                 )
                             }
                         }
 
-                        // Step Selector Chips (+1, +5, +10, +50, +100)
+                        // Step Selector Chips (+1, +5, +10, +50, +100) - Huge, High-Contrast & Senior Friendly
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Text(
-                                text = "STEP INCREMENT",
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                text = "STEP INCREMENT SIZE",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Black,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 letterSpacing = 1.sp
                             )
 
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState()),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
                             ) {
                                 listOf(1L, 5L, 10L, 50L, 100L).forEach { step ->
                                     val isSelected = stepSize == step
@@ -673,11 +710,21 @@ fun TallyClickerScreen(
                                         label = {
                                             Text(
                                                 text = "+$step",
-                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                                fontSize = 24.sp,
+                                                fontWeight = FontWeight.Black
                                             )
                                         },
-                                        shape = RoundedCornerShape(8.dp),
-                                        modifier = Modifier.testTag("step_chip_$step")
+                                        shape = RoundedCornerShape(16.dp),
+                                        colors = FilterChipDefaults.filterChipColors(
+                                            selectedContainerColor = trackerColor,
+                                            selectedLabelColor = Color.White,
+                                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                        ),
+                                        border = if (isSelected) BorderStroke(3.dp, trackerColor) else BorderStroke(1.5.dp, MaterialTheme.colorScheme.outlineVariant),
+                                        modifier = Modifier
+                                            .height(60.dp)
+                                            .padding(horizontal = 2.dp)
+                                            .testTag("step_chip_$step")
                                     )
                                 }
                             }
@@ -692,43 +739,60 @@ fun TallyClickerScreen(
                             // Decrement
                             OutlinedButton(
                                 onClick = { performTally(-stepSize) },
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(16.dp),
                                 enabled = dateCount > 0,
-                                modifier = Modifier.testTag("tally_decrement_btn")
+                                modifier = Modifier
+                                    .height(58.dp)
+                                    .testTag("tally_decrement_btn"),
+                                contentPadding = PaddingValues(horizontal = 16.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Remove,
                                     contentDescription = "Subtract $stepSize",
-                                    modifier = Modifier.size(16.dp)
+                                    modifier = Modifier.size(24.dp)
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text("-$stepSize", fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    "-$stepSize",
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Black
+                                )
                             }
 
                             // Manual Exact Value Input
                             FilledTonalButton(
                                 onClick = { showManualSetDialog = true },
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier.testTag("tally_set_exact_btn")
+                                shape = RoundedCornerShape(16.dp),
+                                modifier = Modifier
+                                    .height(58.dp)
+                                    .testTag("tally_set_exact_btn"),
+                                contentPadding = PaddingValues(horizontal = 16.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Edit,
                                     contentDescription = "Set Value",
-                                    modifier = Modifier.size(16.dp)
+                                    modifier = Modifier.size(24.dp)
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text("Set Value", fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    "Set Value",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Black
+                                )
                             }
 
                             // Reset Date Count
                             OutlinedIconButton(
                                 onClick = { showResetConfirmDialog = true },
-                                modifier = Modifier.testTag("tally_reset_btn")
+                                modifier = Modifier
+                                    .size(58.dp)
+                                    .testTag("tally_reset_btn")
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Refresh,
                                     contentDescription = "Reset Date Count",
-                                    tint = MaterialTheme.colorScheme.error
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.size(30.dp)
                                 )
                             }
                         }
@@ -743,14 +807,14 @@ fun TallyClickerScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
                         text = "ALL COUNTERS (${summaries.size})",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         letterSpacing = 1.sp
                     )
 
@@ -762,37 +826,41 @@ fun TallyClickerScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { selectedTrackerId = item.tracker.id },
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(20.dp),
                             border = if (item.tracker.id == activeSummary?.tracker?.id)
-                                BorderStroke(2.dp, itemColor)
+                                BorderStroke(3.dp, itemColor)
                             else
-                                BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                                BorderStroke(1.5.dp, MaterialTheme.colorScheme.outlineVariant)
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(12.dp),
+                                    .padding(16.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                                    modifier = Modifier.weight(1f)
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .size(12.dp)
+                                            .size(18.dp)
                                             .background(itemColor, CircleShape)
                                     )
                                     Column {
                                         Text(
                                             text = item.tracker.name,
-                                            fontWeight = FontWeight.Bold,
-                                            style = MaterialTheme.typography.titleMedium
+                                            fontWeight = FontWeight.Black,
+                                            fontSize = 20.sp,
+                                            style = MaterialTheme.typography.titleLarge
                                         )
                                         Text(
                                             text = "Today: ${item.todayTotal} • Total: ${item.cumulativeTotal}",
-                                            style = MaterialTheme.typography.bodySmall,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.SemiBold,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
@@ -800,32 +868,32 @@ fun TallyClickerScreen(
 
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
                                     Surface(
-                                        color = itemColor.copy(alpha = 0.12f),
-                                        shape = RoundedCornerShape(8.dp)
+                                        color = itemColor.copy(alpha = 0.18f),
+                                        shape = RoundedCornerShape(12.dp)
                                     ) {
                                         Text(
                                             text = "$itemDateCount",
-                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                                             fontFamily = FontFamily.Monospace,
                                             fontWeight = FontWeight.Black,
                                             color = itemColor,
-                                            fontSize = 16.sp
+                                            fontSize = 22.sp
                                         )
                                     }
 
-                                    // Direct +1 and +10 quick clickers
+                                    // Direct +1 and +10 quick clickers (Senior friendly sizing 52dp)
                                     FilledTonalIconButton(
                                         onClick = {
                                             if (soundEnabled) SoundHelper.playClick()
                                             if (hapticEnabled) haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                             viewModel.tallyClick(item.tracker.id, selectedDate, 1)
                                         },
-                                        modifier = Modifier.size(34.dp).testTag("quick_plus1_${item.tracker.name}")
+                                        modifier = Modifier.size(52.dp).testTag("quick_plus1_${item.tracker.name}")
                                     ) {
-                                        Text("+1", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                        Text("+1", fontSize = 16.sp, fontWeight = FontWeight.Black)
                                     }
 
                                     FilledTonalIconButton(
@@ -834,9 +902,9 @@ fun TallyClickerScreen(
                                             if (hapticEnabled) haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                             viewModel.tallyClick(item.tracker.id, selectedDate, 10)
                                         },
-                                        modifier = Modifier.size(34.dp).testTag("quick_plus10_${item.tracker.name}")
+                                        modifier = Modifier.size(52.dp).testTag("quick_plus10_${item.tracker.name}")
                                     ) {
-                                        Text("+10", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                        Text("+10", fontSize = 15.sp, fontWeight = FontWeight.Black)
                                     }
                                 }
                             }
@@ -853,13 +921,14 @@ fun TallyClickerScreen(
         AlertDialog(
             onDismissRequest = { showManualSetDialog = false },
             title = {
-                Text("Set Exact Count", fontWeight = FontWeight.Bold)
+                Text("Set Exact Count", fontWeight = FontWeight.Black, fontSize = 20.sp)
             },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
-                        text = "Enter the target count for ${activeSummary.tracker.name} on ${DateUtils.formatToShortDisplay(selectedDate)}:",
-                        style = MaterialTheme.typography.bodyMedium
+                        text = "Enter the count for ${activeSummary.tracker.name} on ${DateUtils.formatToShortDisplay(selectedDate)}:",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 16.sp
                     )
                     OutlinedTextField(
                         value = inputCountText,
@@ -867,7 +936,11 @@ fun TallyClickerScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("manual_count_input"),
-                        label = { Text("Count") },
+                        label = { Text("Count", fontSize = 16.sp) },
+                        textStyle = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace
+                        ),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true
                     )
@@ -880,14 +953,17 @@ fun TallyClickerScreen(
                         viewModel.setCountForDate(activeSummary.tracker.id, selectedDate, parsed)
                         showManualSetDialog = false
                     },
-                    modifier = Modifier.testTag("manual_count_confirm_btn")
+                    modifier = Modifier.height(48.dp).testTag("manual_count_confirm_btn")
                 ) {
-                    Text("Save")
+                    Text("Save Count", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showManualSetDialog = false }) {
-                    Text("Cancel")
+                TextButton(
+                    onClick = { showManualSetDialog = false },
+                    modifier = Modifier.height(48.dp)
+                ) {
+                    Text("Cancel", fontSize = 16.sp)
                 }
             }
         )
@@ -898,11 +974,13 @@ fun TallyClickerScreen(
         AlertDialog(
             onDismissRequest = { showResetConfirmDialog = false },
             title = {
-                Text("Reset Date Count?", fontWeight = FontWeight.Bold)
+                Text("Reset Date Count?", fontWeight = FontWeight.Black, fontSize = 20.sp)
             },
             text = {
                 Text(
-                    "This will reset count for ${activeSummary.tracker.name} on ${DateUtils.formatToPrettyDisplay(selectedDate)} back to 0."
+                    "This will reset count for ${activeSummary.tracker.name} on ${DateUtils.formatToPrettyDisplay(selectedDate)} back to 0.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 16.sp
                 )
             },
             confirmButton = {
@@ -912,14 +990,17 @@ fun TallyClickerScreen(
                         showResetConfirmDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    modifier = Modifier.testTag("reset_confirm_btn")
+                    modifier = Modifier.height(48.dp).testTag("reset_confirm_btn")
                 ) {
-                    Text("Reset to 0")
+                    Text("Reset to 0", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showResetConfirmDialog = false }) {
-                    Text("Cancel")
+                TextButton(
+                    onClick = { showResetConfirmDialog = false },
+                    modifier = Modifier.height(48.dp)
+                ) {
+                    Text("Cancel", fontSize = 16.sp)
                 }
             }
         )
@@ -930,11 +1011,13 @@ fun TallyClickerScreen(
         AlertDialog(
             onDismissRequest = { showDeleteConfirmDialog = false },
             title = {
-                Text("Delete Tracker Name?", fontWeight = FontWeight.Bold)
+                Text("Delete Tracker Name?", fontWeight = FontWeight.Black, fontSize = 20.sp)
             },
             text = {
                 Text(
-                    "Are you sure you want to delete '${activeSummary.tracker.name}' (${activeSummary.tracker.unit}) and all its historical counts? This action cannot be undone."
+                    "Are you sure you want to delete '${activeSummary.tracker.name}' (${activeSummary.tracker.unit}) and all its historical counts? This action cannot be undone.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 16.sp
                 )
             },
             confirmButton = {
@@ -944,14 +1027,17 @@ fun TallyClickerScreen(
                         showDeleteConfirmDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    modifier = Modifier.testTag("delete_tracker_confirm_btn")
+                    modifier = Modifier.height(48.dp).testTag("delete_tracker_confirm_btn")
                 ) {
-                    Text("Delete Name")
+                    Text("Delete Name", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteConfirmDialog = false }) {
-                    Text("Cancel")
+                TextButton(
+                    onClick = { showDeleteConfirmDialog = false },
+                    modifier = Modifier.height(48.dp)
+                ) {
+                    Text("Cancel", fontSize = 16.sp)
                 }
             }
         )
