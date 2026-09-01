@@ -85,6 +85,7 @@ import com.example.ui.components.AddTrackerDialog
 import com.example.ui.components.ComparisonMatrixView
 import com.example.ui.components.EditCountEntryDialog
 import com.example.ui.components.ExportDialog
+import com.example.ui.components.MultiPeriodLogsView
 import com.example.ui.components.TallyClickerScreen
 import com.example.ui.components.TrackerCard
 import com.example.ui.components.TrackerDetailSheet
@@ -96,6 +97,7 @@ fun MainScreen(viewModel: CountTrackerViewModel) {
     val rawSummaries by viewModel.rawSummaries.collectAsStateWithLifecycle()
     val summaries by viewModel.filteredSummaries.collectAsStateWithLifecycle()
     val matrix by viewModel.comparisonMatrix.collectAsStateWithLifecycle()
+    val grandCumulativeStats by viewModel.grandCumulativeStats.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
     val selectedTrackerId by viewModel.selectedTrackerId.collectAsStateWithLifecycle()
@@ -158,7 +160,7 @@ fun MainScreen(viewModel: CountTrackerViewModel) {
                     selected = currentTab == 2,
                     onClick = { currentTab = 2 },
                     icon = { Icon(Icons.Default.Assessment, contentDescription = null) },
-                    label = { Text("Matrix") },
+                    label = { Text("Logs & Totals") },
                     modifier = Modifier.testTag("nav_tab_matrix")
                 )
                 NavigationBarItem(
@@ -247,6 +249,8 @@ fun MainScreen(viewModel: CountTrackerViewModel) {
                         summaries = rawSummaries,
                         viewModel = viewModel,
                         onAddNewTracker = { showAddTrackerDialog = true },
+                        onEditTracker = { trackerToEdit = it },
+                        onDeleteTracker = { viewModel.deleteTrackerById(it) },
                         onOpenExport = { showExportDialog = true },
                         soundEnabled = soundEnabled,
                         hapticEnabled = hapticEnabled
@@ -429,20 +433,17 @@ fun MainScreen(viewModel: CountTrackerViewModel) {
                     }
                 }
 
-                // Tab 2: Direct Matrix Comparison (All Names & All Dates)
+                // Tab 2: Multi-Period Logs (Grand Cumulative, Daily Log, Month Log, Year Log, Matrix)
                 2 -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 80.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        item {
-                            ComparisonMatrixView(
-                                matrix = matrix,
-                                onExportClicked = { showExportDialog = true }
-                            )
-                        }
-                    }
+                    MultiPeriodLogsView(
+                        summaries = rawSummaries,
+                        grandStats = grandCumulativeStats,
+                        matrix = matrix,
+                        onExportClicked = { showExportDialog = true },
+                        onEditEntry = { entryToEdit = it },
+                        onDeleteEntry = { viewModel.deleteCountEntry(it) },
+                        onEditTracker = { trackerToEdit = it }
+                    )
                 }
 
                 // Tab 3: Activity Timeline (All Entries Chronological)

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.AppDatabase
 import com.example.data.ComparisonMatrix
 import com.example.data.DailyCountEntry
+import com.example.data.GrandCumulativeStats
 import com.example.data.TrackerEntity
 import com.example.data.TrackerRepository
 import com.example.data.TrackerSummary
@@ -69,6 +70,13 @@ class CountTrackerViewModel(application: Application) : AndroidViewModel(applica
             initialValue = ComparisonMatrix(emptyList(), emptyList(), emptyMap(), 0L)
         )
 
+    val grandCumulativeStats: StateFlow<GrandCumulativeStats> = repository.grandCumulativeStats
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = GrandCumulativeStats(0L, 0L, 0L, 0L, 0L, 0, 0, emptyList())
+        )
+
     init {
         viewModelScope.launch {
             database.seedInitialData()
@@ -118,6 +126,19 @@ class CountTrackerViewModel(application: Application) : AndroidViewModel(applica
                 _selectedTrackerId.value = null
             }
             _notification.value = UiNotification("Tracker '${tracker.name}' deleted")
+        }
+    }
+
+    fun deleteTrackerById(id: Long) {
+        viewModelScope.launch {
+            val tracker = repository.getTrackerById(id)
+            if (tracker != null) {
+                repository.deleteTracker(tracker)
+                if (_selectedTrackerId.value == id) {
+                    _selectedTrackerId.value = null
+                }
+                _notification.value = UiNotification("Tracker '${tracker.name}' deleted")
+            }
         }
     }
 

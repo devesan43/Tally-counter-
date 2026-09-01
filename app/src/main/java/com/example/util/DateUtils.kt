@@ -10,6 +10,9 @@ object DateUtils {
     private val displayShortFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
     private val displayFullFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val displayPrettyFormat = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
+    private val monthIsoFormat = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+    private val displayMonthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+    private val displayMonthShortFormat = SimpleDateFormat("MMM yyyy", Locale.getDefault())
 
     fun todayIso(): String {
         return isoFormat.format(Date())
@@ -19,6 +22,40 @@ object DateUtils {
         val cal = Calendar.getInstance()
         cal.add(Calendar.DAY_OF_YEAR, -1)
         return isoFormat.format(cal.time)
+    }
+
+    fun thisMonthIso(): String {
+        return monthIsoFormat.format(Date())
+    }
+
+    fun thisYearIso(): String {
+        return SimpleDateFormat("yyyy", Locale.getDefault()).format(Date())
+    }
+
+    fun extractMonthIso(isoDate: String): String {
+        return if (isoDate.length >= 7) isoDate.substring(0, 7) else thisMonthIso()
+    }
+
+    fun extractYearIso(isoDate: String): String {
+        return if (isoDate.length >= 4) isoDate.substring(0, 4) else thisYearIso()
+    }
+
+    fun formatToMonthDisplay(monthIso: String): String {
+        return try {
+            val date = monthIsoFormat.parse(monthIso) ?: return monthIso
+            displayMonthFormat.format(date)
+        } catch (_: Exception) {
+            monthIso
+        }
+    }
+
+    fun formatToMonthShortDisplay(monthIso: String): String {
+        return try {
+            val date = monthIsoFormat.parse(monthIso) ?: return monthIso
+            displayMonthShortFormat.format(date)
+        } catch (_: Exception) {
+            monthIso
+        }
     }
 
     fun formatToShortDisplay(isoDate: String): String {

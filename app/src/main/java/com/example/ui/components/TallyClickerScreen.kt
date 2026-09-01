@@ -37,7 +37,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.PersonAdd
@@ -81,6 +83,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -115,6 +118,8 @@ fun TallyClickerScreen(
     summaries: List<TrackerSummary>,
     viewModel: CountTrackerViewModel,
     onAddNewTracker: () -> Unit,
+    onEditTracker: (TrackerEntity) -> Unit,
+    onDeleteTracker: (Long) -> Unit,
     onOpenExport: () -> Unit,
     soundEnabled: Boolean,
     hapticEnabled: Boolean
@@ -123,24 +128,25 @@ fun TallyClickerScreen(
     val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
 
-    // Active tracker selection
-    var selectedTrackerId by remember(summaries) {
-        mutableStateOf(summaries.firstOrNull()?.tracker?.id ?: 1L)
+    // Active tracker selection - persist selected counter across tally clicks & updates
+    var selectedTrackerId by rememberSaveable {
+        mutableStateOf<Long?>(null)
     }
 
-    // Ensure selectedTrackerId points to a valid tracker if available
-    val activeSummary = summaries.find { it.tracker.id == selectedTrackerId }
+    // Ensure activeSummary resolves to selectedTrackerId if still exists, otherwise default to first available
+    val activeSummary = (if (selectedTrackerId != null) summaries.find { it.tracker.id == selectedTrackerId } else null)
         ?: summaries.firstOrNull()
 
     // Selected date for tally counting
-    var selectedDate by remember { mutableStateOf(DateUtils.todayIso()) }
+    var selectedDate by rememberSaveable { mutableStateOf(DateUtils.todayIso()) }
 
     // Step size (+1, +5, +10, +50, +100)
-    var stepSize by remember { mutableLongStateOf(1L) }
+    var stepSize by rememberSaveable { mutableLongStateOf(1L) }
 
-    // Dialog state for manual count input
+    // Dialog state for manual count input & delete tracker
     var showManualSetDialog by remember { mutableStateOf(false) }
     var showResetConfirmDialog by remember { mutableStateOf(false) }
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
     // Button press scale animation
     val scaleAnim = remember { Animatable(1f) }
@@ -245,6 +251,29 @@ fun TallyClickerScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    // First Name shortcut button
+                    if (summaries.isNotEmpty()) {
+                        val firstTracker = summaries.first().tracker
+                        val isFirstSelected = activeSummary?.tracker?.id == firstTracker.id
+                        item {
+                            FilterChip(
+                                selected = isFirstSelected,
+                                onClick = { selectedTrackerId = firstTracker.id },
+                                label = { Text("★ First Name (${firstTracker.name})", fontWeight = FontWeight.Black) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(14.dp),
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                },
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.testTag("tally_first_name_btn")
+                            )
+                        }
+                    }
+
                     items(summaries, key = { it.tracker.id }) { item ->
                         val isSelected = item.tracker.id == activeSummary?.tracker?.id
                         val itemColor = Color(item.tracker.colorHex)
@@ -385,7 +414,7 @@ fun TallyClickerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // Header info: Active Name & Units
+                        // Header info: Active Name & Units with Edit & Delete actions
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -405,19 +434,47 @@ fun TallyClickerScreen(
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Black
                                 )
+                                Surface(
+                                    color = trackerColor.copy(alpha = 0.12f),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text(
+                                        text = activeSummary.tracker.unit.uppercase(),
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = trackerColor
+                                    )
+                                }
                             }
 
-                            Surface(
-                                color = trackerColor.copy(alpha = 0.12f),
-                                shape = RoundedCornerShape(8.dp)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                Text(
-                                    text = activeSummary.tracker.unit.uppercase(),
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = trackerColor
-                                )
+                                IconButton(
+                                    onClick = { onEditTracker(activeSummary.tracker) },
+                                    modifier = Modifier.size(32.dp).testTag("tally_edit_tracker_btn")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Edit Name & Unit",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = { showDeleteConfirmDialog = true },
+                                    modifier = Modifier.size(32.dp).testTag("tally_delete_tracker_btn")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Name & Unit",
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
                             }
                         }
 
@@ -862,6 +919,38 @@ fun TallyClickerScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showResetConfirmDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    // Delete Tracker & Unit Confirmation Dialog
+    if (showDeleteConfirmDialog && activeSummary != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmDialog = false },
+            title = {
+                Text("Delete Tracker Name?", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Text(
+                    "Are you sure you want to delete '${activeSummary.tracker.name}' (${activeSummary.tracker.unit}) and all its historical counts? This action cannot be undone."
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDeleteTracker(activeSummary.tracker.id)
+                        showDeleteConfirmDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                    modifier = Modifier.testTag("delete_tracker_confirm_btn")
+                ) {
+                    Text("Delete Name")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmDialog = false }) {
                     Text("Cancel")
                 }
             }
